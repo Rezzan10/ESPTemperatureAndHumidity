@@ -8,6 +8,7 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///temperature_data.db'
 db = SQLAlchemy(app)
 
+
 class TemperatureData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
@@ -15,9 +16,11 @@ class TemperatureData(db.Model):
     temperature = db.Column(db.Float)
     humidity = db.Column(db.Float)
 
+
 @app.route("/")
 def client():
     return ""
+
 
 @app.route('/api/temperatures', methods=['GET'])
 def get_all_temperature():
@@ -57,7 +60,7 @@ def add_temperature():
     db.session.commit()
 
     return jsonify({'message': 'Temperature data added successfully'}), 201
-    
+
 
 if __name__ == "__main__":
     with app.app_context():
