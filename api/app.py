@@ -62,6 +62,28 @@ def add_temperature():
     return jsonify({'message': 'Temperature data added successfully'}), 201
 
 
+@app.route('/api/temperatures/<date>', methods=['GET'])
+def get_temperature_by_date(date):
+    try:
+        date_object = datetime.strptime(date, '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({'error': 'Invalid date format'}), 400
+
+    data = TemperatureData.query.filter_by(date=date_object).all()
+
+    temperature_list = []
+    for entry in data:
+        temperature_list.append({
+            'id': entry.id,
+            'date': entry.date.strftime('%Y-%m-%d'),
+            'time': entry.time.strftime('%H:%M:%S'),
+            'temperature': entry.temperature,
+            'humidity': entry.humidity
+        })
+
+    return jsonify({'data': temperature_list})
+
+
 if __name__ == "__main__":
     with app.app_context():
         print(f"Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
