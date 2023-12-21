@@ -1,60 +1,73 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import {
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
+   CategoryScale,
+   Chart as ChartJS,
+   Legend,
+   LinearScale,
+   LineElement,
+   PointElement,
+   Title,
+   Tooltip,
 } from 'chart.js';
 import {Line} from "react-chartjs-2";
+import {WeatherData} from "../../App.tsx";
 
-export default function WeatherChart() {
 
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        PointElement,
-        LineElement,
-        Title,
-        Tooltip,
-        Legend
-    );
+export default function WeatherChart(props: { weatherdata: WeatherData[], mode: string }) {
+   ChartJS.register(
+       CategoryScale,
+       LinearScale,
+       PointElement,
+       LineElement,
+       Title,
+       Tooltip,
+       Legend
+   );
+   const [labels, setLabels] = useState<string[]>([]);
+   const [humidities, setHumidities] = useState<number[]>([]);
+   const [temperatures, setTemperatures] = useState<number[]>([])
 
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top' as const,
-            },
-        },
-    };
 
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+   useEffect(() => {
+       const uniqueTimes = [...new Set(props.weatherdata.map(entry => entry.time))];
+       setLabels(uniqueTimes);
+       setTemperatures(props.weatherdata.map(entry => entry.temperature))
+       setHumidities(props.weatherdata.map(entry => entry.humidity))
+   }, [props.weatherdata]);
 
-    const data = {
-        labels,
-        datasets: [
-            {
-                label: 'Temperatur',
-                data: [4, 5],
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-                label: 'Feuchtigkeit',
-                data: [2, 5, 7],
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-        ],
-    };
 
-    return (
-        <>
-            <Line options={options} data={data}/>
-        </>
-    )
-};
+   console.log(temperatures)
+
+
+   const options = {
+       responsive: true,
+       plugins: {
+           legend: {
+               position: 'top' as const,
+           },
+       },
+   };
+
+
+   const data = {
+       labels,
+       datasets: [
+           {
+               label: props.mode === 'temp' ? 'Temperatur (°C)' : 'Feuchtigkeit (%)',
+               data: props.mode === 'temp' ? temperatures : humidities,
+               borderColor: props.mode === 'temp' ? 'rgb(255, 99, 132)' : 'rgb(53, 162, 235)',
+               backgroundColor: props.mode === 'temp' ? 'rgba(255, 99, 132, 0.5)' : 'rgba(53, 162, 235, 0.5)',
+           },
+       ],
+   };
+
+
+   return (
+       <>
+           <Line options={options} data={data}/>
+       </>
+   )
+}
+
+
+

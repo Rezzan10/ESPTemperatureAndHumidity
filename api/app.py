@@ -22,36 +22,13 @@ def client():
     return ""
 
 
-@app.route('/api/temperatures', methods=['GET'])
-def get_all_temperature():
-    data = TemperatureData.query.all()
-
-    temperature_list = []
-    for entry in data:
-        temperature_list.append({
-            'id': entry.id,
-            'date': entry.date.strftime('%Y-%m-%d'),
-            'time': entry.time.strftime('%H:%M:%S'),
-            'temperature': entry.temperature,
-            'humidity': entry.humidity
-        })
-
-    return jsonify({'data': temperature_list})
-
-
 @app.route('/api/temperature', methods=['POST'])
 def add_temperature():
     data = request.get_json()
 
-    try:
-        date_object = datetime.strptime(data['date'], '%Y-%m-%d').date()
-        time_object = datetime.strptime(data['time'], '%H:%M:%S').time()
-    except ValueError:
-        return jsonify({'error': 'Invalid date or time format'}), 400
-
     new_data = TemperatureData(
-        date=date_object,
-        time=time_object,
+        date=data['date'],
+        time=data['time'],
         temperature=data['temperature'],
         humidity=data['humidity']
     )
@@ -62,7 +39,7 @@ def add_temperature():
     return jsonify({'message': 'Temperature data added successfully'}), 201
 
 
-@app.route('/api/temperatures/<date>', methods=['GET'])
+@app.route('/api/temperature/<date>', methods=['GET'])
 def get_temperature_by_date(date):
     try:
         date_object = datetime.strptime(date, '%Y-%m-%d').date()
