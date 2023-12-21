@@ -6,6 +6,8 @@ import {FaThermometerHalf} from "react-icons/fa";
 import {WiHumidity} from "react-icons/wi";
 
 
+
+
 export interface WeatherData {
    date: string,
    humidity: number,
@@ -15,10 +17,14 @@ export interface WeatherData {
 }
 
 
+
+
 function App() {
    const [selectedDate, setSelectedDate] = useState([]);
    const [data, setData] = useState([]);
    const [mode, setMode] = useState<string>("temp")
+
+
 
 
    useEffect(() => {
@@ -35,14 +41,20 @@ function App() {
        };
 
 
+
+
        fetchData();
    }, [selectedDate]);
+
+
 
 
    function handleDateChange(date: any): void {
        const formattedDate = date?.format('YYYY-MM-DD');
        setSelectedDate(formattedDate);
    }
+
+
 
 
    function handleModeChange() {
@@ -53,24 +65,27 @@ function App() {
        }
    }
 
-
-
-
-    return (
+   return (
        <>
            <h1 style={{display: "flex", justifyContent: "center"}}>Wetterdaten</h1>
            <div style={{display: "flex", justifyContent: "center"}}>
                <DatePicker placeholder={"Datum auswählen"} onChange={handleDateChange}/>
+               <Switch
+                   style={{marginLeft:24, marginTop:4}}
+                   onChange={handleModeChange}
+                   checkedChildren={<WiHumidity style={{fontSize: "18px"}}/>}
+                   unCheckedChildren={<FaThermometerHalf style={{fontSize: "18px"}}/>}/>
            </div>
-           <Switch
-               onChange={handleModeChange}
-               checkedChildren={<FaThermometerHalf style={{fontSize: "18px"}}/>}
-               unCheckedChildren={<WiHumidity style={{fontSize: "18px"}}/>}/>
-           <WeatherChart weatherdata={data} mode={mode}/>
+
+
+           <WeatherChart weatherData={data} mode={mode}/>
        </>
    )
 }
 
-
 export default App
+
+
+
+
 
