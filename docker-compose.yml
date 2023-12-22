@@ -1,10 +1,10 @@
 services:
   api:
-    image: pbrunke/temperature-api:1.0.0
+    image: rezzan/temperature-api:1.0.1
     expose:
       - "5000:5000"
   server:
-    image: pbrunke/temperature-server:1.0.0
+    image: rezzan/temperature-server:1.0.0
     ports:
       - "80:80"
     depends_on:
